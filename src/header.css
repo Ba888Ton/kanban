@@ -1,0 +1,97 @@
+.logo {
+	padding: 0 8px 0 16px;
+}
+.head-title {
+	color: #ffffff;
+	font-size: 28px;
+	font-weight: 400;
+	margin: 10px 0;
+}
+.main-wrap {
+	height: 100%;
+	display: flex;
+	flex: 1;
+	flex-flow: row wrap;
+	align-content: flex-start;
+	background: #0079bf;
+}
+.main_placeholder {
+	position: absolute;
+	font-size: 24px;
+	left: 100px;
+	top: 100px;
+	color: #ffffff;
+	display: none;
+}
+
+.header {
+	height: 55px;
+	background: #0067A3;
+	flex: 1 100%;
+	display: flex;
+	align-items: center;
+}
+.add-new-list {
+	width: 180px;
+	height: 33px;
+	font-size: 18px;
+	padding:  0 10px 0 43px;
+	border-radius: 5px;
+	position: relative;
+	border: none;
+	margin-left: auto;
+	cursor: pointer;
+	background: #ffffff;
+}
+.add-new-list::before {
+	content: url(img/add-icon.svg);
+	width: 22px;
+	height: 22px;
+	position: absolute;
+	top: 6px; left: 9px;
+}
+.avatar {
+	width: 64px;
+	position: relative;
+	padding-top: 5px;
+	margin-left: 50px;
+	cursor: pointer;
+}
+.avatar::after {
+	content: url(img/arrow-down.svg);
+	width: 22px;
+	height: 22px;
+	position: absolute;
+	top: 13px; 
+	transition: 300ms transform ease-in-out;
+}
+.avatar.arrow-up::after {
+	transform: rotate(180deg);
+}
+.drop-down {
+	position: absolute;
+	right: 0; top: 53px;
+	background: #0067A3;
+	width: 150px;	
+	z-index: 2;
+}
+.personal-menu {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.header-drop-item {
+	padding: 10px 20px;
+}
+.header-drop-item:hover {
+	background: #ffffff;
+}
+.header-drop-item:hover .drop-link {
+	color: #0067A3;
+}
+.drop-down .drop-link {
+	color: #ffffff;
+	text-decoration: none;
+	font-family: Roboto, sans-serif;
+	font-size: 18px;
+}

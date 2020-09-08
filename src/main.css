@@ -1,0 +1,178 @@
+html, body, div, h3, ul, li, input {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	list-style: none;
+}
+* {
+	font-family: Roboto, sans-serif;
+}
+.main {
+	display: flex;
+	align-content: flex-start;
+	align-items: flex-start;
+	flex: 1;
+	align-self: flex-start;
+	height: 590px;
+	justify-content: flex-start;
+}
+
+.board {
+	position: relative;
+	max-width: 500px;
+	width: 100%;
+	max-height: 500px;;
+	margin: 20px 12px;
+	padding: 14px;
+	background: #ebecf0;
+	border-radius: 5px;	
+}
+.board.scroll {
+	overflow-y: scroll;
+}
+.list-item {
+	background: #fff;
+	margin: 15px 0;
+	padding: 7px;
+	border-radius: 5px;
+}
+.input {
+	border: none;
+	width: 100%;
+	border-radius: 5px;
+	height: 30px;
+	margin-bottom: 20px;
+	padding: 7px;
+	font-size: 16px;
+}
+.input:focus {
+	outline: none;
+	border-bottom: #bf4600 2px solid;	
+}
+.input:not(:focus) {
+	outline: none;
+	border: rgb(191, 70, 0) 2px solid;
+	box-shadow: 0px 0px 5px 15px rgba(191, 70, 0, 0.3);
+}
+.dropdown-menu {
+	position: absolute;
+	background: #f4f4f4;
+	top: 0; left: 0; right: 0;
+	padding: 12px;
+	z-index: 10;
+	box-shadow: 0px 0px 0px 1500px rgba(0, 0, 0, 0.3);
+}
+.dropdown-item {
+	background: #fff;
+	margin: 15px 0;
+	padding: 7px;
+	border-radius: 5px;
+}
+.dropdown-item:hover {
+	font-weight: 700;
+	cursor: pointer;
+}
+.title-wrap {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 8px;
+}
+.title {
+	font-weight: 500;
+	font-size: 18px;	
+}
+.board-menu {
+	padding-bottom: 7px;
+	cursor: pointer;
+	z-index: 1;
+	width: 20px;
+	height: 20px;
+	background: url(img/three-dots.svg);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+.board-menu.show {
+	filter: invert();
+}
+.board-dropdown {
+	position: absolute;
+	top: 0;
+	right: 0;
+	min-height: 85px;
+	min-width: 170px;
+	color: #fff;
+	font-weight: 700;
+	background: #3ba7e6;
+	padding: 12px 12px 12px 30px;
+	border-radius: 5px;
+	display: none;
+}
+.board-dropdown.show {
+	display: block;
+}
+.board-dropdown li {
+	margin: 3px 0;
+}
+.add-btn {
+	color: #5E6C84;
+	font-size: 18px;
+	line-height: 30px;
+	border: none;
+	background: none;
+	padding-left: 20px;
+}
+.add-btn:disabled {
+	color: #fff;
+	pointer-events: none;
+}
+.add-btn:disabled::before {
+	filter: brightness(100);
+}
+.add-btn::before {
+	content:url(img/add-card.svg);
+	display: block;
+	width: 16px;
+	height: 16px;
+	position: absolute;
+	left: 12px;
+}
+.add-btn:hover {
+	cursor: pointer;
+	color: #84765e;
+}
+.add-btn:hover::before {
+	filter: brightness(0) saturate(100%) invert(44%) sepia(21%) saturate(474%) hue-rotate(359deg) brightness(99%) contrast(83%);
+}
+@media(max-width:1024px) {
+	.main {
+		flex-direction: column;
+		height: auto;
+	}
+}
+@media(max-width:770px) {
+	.header {
+		flex-wrap: wrap;
+		height: auto;
+	}
+	.add-new-list {
+		flex-basis: 100%;
+		margin: 20px;
+		order: 3;
+	}
+	.avatar {
+		margin-left: auto;
+	}
+	.board {
+		width: calc(100% - 60px);
+
+	}
+}
+@media(max-width:500px) {
+	.head-title {
+		display: none;
+	}
+	.footer-text:last-child {
+		display: none;
+	}
+}
