@@ -6,13 +6,7 @@ export function headerMenu(){
     userDropDown.innerHTML = `
         <ul class="personal-menu">
             <li class="header-drop-item">
-                <a class="drop-link" href="#">My account</a>
-            </li>
-            <li class="header-drop-item">
-                <a class="drop-link" href="#">My company</a>
-            </li>
-            <li class="header-drop-item">
-                <a class="drop-link" href="#">My Boards</a>
+                <a class="drop-link" href="#">Profile</a>
             </li>
             <li class="header-drop-item">
                 <a class="drop-link" href="#">Logout</a>

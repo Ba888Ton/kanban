@@ -53,6 +53,7 @@ function clickListener(event){
 	let myEvent = event.target;
 	let dropDownMenu = document.createElement('ul');
 		dropDownMenu.classList.add('dropdown-menu');	
+		dropDownMenu.innerHTML = 'Выберите из списка...';
 	if (myEvent.dataset.add){
 		if (document.querySelector('.dropdown-menu')) return;
 		if (document.querySelector('.input')) return;
@@ -74,7 +75,7 @@ function clickListener(event){
 			boardList[boardNum].appendChild(dropDownMenu);
 		}
 	}
-	if (myEvent.closest('.dropdown-menu')){
+	if (myEvent.closest('.dropdown-item')){
 		let choosenItemIndex = myEvent.dataset.count;
 		let choosenItem = dataMock[boardNum - 1].issues.splice(choosenItemIndex, 1);
 		dataMock[boardNum].issues.push(choosenItem[0]);
@@ -93,6 +94,12 @@ function clickListener(event){
 		}
 		scroll();
 		buttonDisableSwitcher();
+	}
+	if (myEvent.closest('.dropdown-menu')){
+		let dropdownList = document.querySelectorAll('.dropdown-item');
+		for (let i = 0; i < dropdownList.length; i++){
+			dropdownList[i].classList.toggle('show');
+		}
 	}
 }
 function setLocalStorage(){	
