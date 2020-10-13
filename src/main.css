@@ -53,28 +53,43 @@ html, body, div, h3, ul, li, input {
 	outline: none;
 	border: #3ba7e6 2px solid;
 }
+@keyframes fadeOut {
+	from {
+		border-bottom: #3ba7e6 2px solid;
+	}
+	to {
+		border-bottom: transparent 2px solid;
+	}
+  }
 .dropdown-menu {
 	background: #ffffff;
 	z-index: 10;
 	height: 32px;
 	margin-bottom: 10px;
 	line-height: 32px;
-	outline: #3ba7e6 1px solid;
+	border-radius: 5px;
 	color: rgba(0, 0, 0, 0.3);
 	padding: 0 10px;
+	position: relative;
+	animation: fadeOut 1s ease-in-out infinite alternate;
 }
 .dropdown-item {
+	z-index: 10;
 	background: #fff;
 	color: #000000;
 	padding: 7px 15px;
-	display: none;
+	opacity: 0;
+	pointer-events: none;
+	transition: all 0.3s ease-in-out;
 }
 .dropdown-item.show {
-	display: block;
+	pointer-events: all;
+	opacity: 1;
 }
 .dropdown-item:hover {
-	color: blue;
+	color: #404040;
 	cursor: pointer;
+	background: #f4f4f4;
 }
 .title-wrap {
 	display: flex;

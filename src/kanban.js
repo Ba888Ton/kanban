@@ -101,6 +101,26 @@ function clickListener(event){
 			dropdownList[i].classList.toggle('show');
 		}
 	}
+	if (myEvent.dataset.title){
+		mainField.innerHTML = ``;
+		let boardNum = myEvent.dataset.title; 
+		let issuesArray = '';
+		if(dataMock[boardNum].issues.length > 0){
+			for(let issue of dataMock[boardNum].issues){
+				issuesArray += `<li class="list-item">${issue.name}</li>`;
+			}
+		}
+		let board = document.createElement('article');
+		board.classList.add('board');
+		board.innerHTML = `
+		<div class="title-wrap">
+			<h3 class="title">${dataMock[boardNum].title}</h3>
+			<button class="close_board">X</button>
+		</div>
+		<ul class="list">${issuesArray}</ul>
+		`;
+	mainField.appendChild(board);
+	}
 }
 function setLocalStorage(){	
 	for (let i = 0; i < dataMock.length; i++){
@@ -114,7 +134,7 @@ function setLocalStorage(){
 		board.classList.add('board');
 		board.innerHTML = `
 		<div class="title-wrap">
-			<h3 class="title">${dataMock[i].title}</h3>
+			<h3 class="title" data-title="${i}">${dataMock[i].title}</h3>
 			<div class="board-menu" data-boardID="${i}">
 			</div>
 		</div>
