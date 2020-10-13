@@ -41,7 +41,13 @@ function inputChangeListener(){
 	newItem.classList.add('list-item');
 	newItem.innerHTML = inputItem.value;
 	boardList[0].appendChild(newItem);
-	dataMock[0].issues.push({id : 'task ' + counter, name : inputItem.value });
+	dataMock[0].issues.push({
+		id : 'task ' + counter, 
+		name : inputItem.value, 
+		date: new Date().toDateString(),
+		hours: new Date().getHours(),
+		minutes: new Date().getMinutes(),
+	 });
 	boardList[0].removeChild(inputItem);
 	counter++;
 	inputItem.value = '';
@@ -107,11 +113,17 @@ function clickListener(event){
 		let issuesArray = '';
 		if(dataMock[boardNum].issues.length > 0){
 			for(let issue of dataMock[boardNum].issues){
-				issuesArray += `<li class="list-item">${issue.name}</li>`;
+				
+				issuesArray += `
+				<li class="list-item details">
+					<span>date: ${issue.date} time: ${issue.hours}:${issue.minutes}</span>
+					<h4>Title: ${issue.name}</h4>
+					<p>Description: issue description</p>
+				</li>`;
 			}
 		}
 		let board = document.createElement('article');
-		board.classList.add('board');
+		board.classList.add('board','big_board');
 		board.innerHTML = `
 		<div class="title-wrap">
 			<h3 class="title">${dataMock[boardNum].title}</h3>

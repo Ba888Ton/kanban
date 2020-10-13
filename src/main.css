@@ -27,6 +27,19 @@ html, body, div, h3, ul, li, input {
 	background: #ebecf0;
 	border-radius: 5px;	
 }
+.board.big_board {
+	overflow-y: scroll;
+	position: relative;
+	max-width: 90%;
+	width: calc(100% - 80px);
+	min-width: 288px;
+	max-height: 100%;
+	height: calc(100% - 80px);
+	margin: 20px 12px;
+	padding: 14px;
+	background: #ebecf0;
+	border-radius: 5px;	
+}
 .board.scroll {
 	overflow-y: scroll;
 }
