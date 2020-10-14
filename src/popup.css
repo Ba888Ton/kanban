@@ -42,5 +42,5 @@
     cursor: pointer;
 }
 .delete-board:hover {
-    color: #bebbbb;
+	text-decoration: underline;
 }

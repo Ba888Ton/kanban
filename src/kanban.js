@@ -106,6 +106,7 @@ function clickListener(event){
 		for (let i = 0; i < dropdownList.length; i++){
 			dropdownList[i].classList.toggle('show');
 		}
+		document.querySelector('.dropdown-menu').classList.toggle('open')
 	}
 	if (myEvent.dataset.title){
 		mainField.innerHTML = ``;
@@ -127,11 +128,17 @@ function clickListener(event){
 		board.innerHTML = `
 		<div class="title-wrap">
 			<h3 class="title">${dataMock[boardNum].title}</h3>
-			<button class="close_board">X</button>
+			<button class="close_board">close</button>
 		</div>
-		<ul class="list">${issuesArray}</ul>
+		<div class="list-wrap">
+			<ul class="list">${issuesArray}</ul>
+		</div>
 		`;
 	mainField.appendChild(board);
+	}
+	if (myEvent.className === 'close_board'){
+		mainField.innerHTML = ``;
+		setLocalStorage();
 	}
 }
 function setLocalStorage(){	
