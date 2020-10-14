@@ -58,6 +58,10 @@ html, body, div, h3, ul, li, input {
 	margin: 15px 0;
 	padding: 7px;
 	border-radius: 5px;
+	cursor: move;
+}
+.list-item.selected {
+	opacity: 0.6;
 }
 .input {
 	border: none;
@@ -109,7 +113,8 @@ html, body, div, h3, ul, li, input {
 	transform: rotate(-45deg);
 }
 .dropdown-menu.open::after {
-	transform: rotate(45deg);
+	transform: rotate(135deg);
+	top: 12px;
 }
 .dropdown-item {
 	z-index: 10;
