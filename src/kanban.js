@@ -40,9 +40,17 @@ function inputChangeListener(){
 	let newItem = document.createElement('li');
 	newItem.classList.add('list-item');
 	newItem.innerHTML = inputItem.value;
+	// newItem.addEventListener('dragstart', function (event) {
+    //     event.dataTransfer.setData('text', event.target.id);
+    //     for (var i = 0; i < storage.length; i++) {
+    //         if (storage[i].id == event.target.id) {
+    //             storage.splice(i, 1);
+    //         }
+    //     }
+    // })
 	boardList[0].appendChild(newItem);
 	dataMock[0].issues.push({
-		id : 'task ' + counter, 
+		id: 'task_' + Math.round(Math.random()*1000*61/4),  
 		name : inputItem.value, 
 		date: new Date().toDateString(),
 		hours: new Date().getHours(),
@@ -131,7 +139,7 @@ function clickListener(event){
 			<button class="close_board">close</button>
 		</div>
 		<div class="list-wrap">
-			<ul class="list">${issuesArray}</ul>
+			<ul class="list" >${issuesArray}</ul>
 		</div>
 		`;
 	mainField.appendChild(board);
@@ -146,11 +154,12 @@ function setLocalStorage(){
 		let issuesArray = '';
 		if(dataMock[i].issues.length > 0){
 			for(let issue of dataMock[i].issues){
-				issuesArray += `<li draggable="true" class="list-item">${issue.name}</li>`;
+				issuesArray += `<li draggable="true" id="${issue.id}" class="list-item">${issue.name}</li>`;
 			}
 		}
 		let board = document.createElement('article');
 		board.classList.add('board');
+		board.id = i;
 		board.innerHTML = `
 		<div class="title-wrap">
 			<h3 class="title" data-title="${i}">${dataMock[i].title}</h3>
@@ -162,7 +171,7 @@ function setLocalStorage(){
 			<li>Replace</li>
 			<li class="delete-board" data-delId="${i}">Delete</li>
 		</ul>
-		<ul class="list">${issuesArray}</ul>
+		<ul class="list" id="list_${i}">${issuesArray}</ul>
 		<button class="add-btn" data-add="${dataMock[i].title}">Add card</button>`;
 	mainField.appendChild(board);
 	}
@@ -200,133 +209,58 @@ function buttonDisableSwitcher(){
 }
 
 // dnd 
-
-boardList[0].addEventListener(`dragstart`, (evt) => {
-	evt.target.classList.add(`selected`);
-  })
-  
-boardList[1].addEventListener(`dragend`, (evt) => {
-evt.target.classList.remove(`selected`);
-});
-
 for (var i = 0; i < boardList.length; i++) {
     addEventsTosection(boardList[i]);
 }
 
 function addEventsTosection(section) {
     section.addEventListener('dragover', function (event) {
-        event.preventDefault();
+		event.preventDefault();
     });
+	// section.addEventListener("dragenter", function( event ) {
+	// 	if (event.target.className === 'list') {
+	// 		document.getElementById(event.target.id).classList.add('expand')
+	// 	}
+	// });
+  
+	// section.addEventListener("dragleave", function( event ) {
+	// 	if (event.target.className !== 'list') {
+	// 		document.getElementById(event.target.id).classList.remove('expand')
+	// 	}
+	// });
+    section.addEventListener('dragstart', function (event) {
+		event.dataTransfer.setData('text', event.target.id);
+		event.target.classList.add(`selected`);
+
+		// for (var i = 0; i < dataMock.length; i++) {
+        //     if (dataMock[i].id == event.target.id) {
+        //         dataMock.splice(i, 1);
+        //     }
+        // }
+
+	})
+	section.addEventListener(`dragend`, (event) => {
+		event.target.classList.remove(`selected`);
+		});
     section.addEventListener('drop', function (event) {
-        if (event.target.className == 'list') {
-            event.target.appendChild(document.getElementById(event.dataTransfer.getData('text')));
-            var liSpanId = ((parseInt(event.dataTransfer.getData('text'))) * -1) + '';
-            // to change the parent of the element in data
+        if (event.target.className === 'list') {
+			document.getElementById(event.target.id).classList.remove('expand')
+			let transfer = document.getElementById(event.dataTransfer.getData('text'))
+			event.target.appendChild(transfer);
             var elementObj = {
-                id: parseInt(event.dataTransfer.getData('text')),
-                value: document.getElementById(liSpanId).innerText,
-                parent: event.target.id
-            }
-            storage.push(elementObj);
-            // to store data in local storage
-            setItemOnLocalStorage('tasks', JSON.stringify(storage));
-        }
+				id : 'task_' + Math.round(Math.random()*1000*61/4), 
+                name: transfer.innerText,
+				date: new Date().toDateString(),
+				hours: new Date().getHours(),
+				minutes: new Date().getMinutes(),
+			}
+
+            dataMock[event.target.parentElement.id].issues.push(elementObj);
+			// // to store data in local storage
+			localStorage.setItem('kanbanDataMock', JSON.stringify(dataMock));
+			console.log(localStorage.getItem('kanbanDataMock'))
+		}
+		// mainField.innerHTML = ''
+		// setLocalStorage();
     });
 }
-
-// mainField.addEventListener(`dragover`, (evt) => {
-// 	// Разрешаем сбрасывать элементы в эту область
-// 	evt.preventDefault();
-// 	// Находим перемещаемый элемент
-// 	const activeElement = boardList[0].querySelector(`.selected`);
-// 	// Находим элемент, над которым в данный момент находится курсор
-// 	const currentElement = evt.target;
-// 	// Проверяем, что событие сработало:
-// 	// 1. не на том элементе, который мы перемещаем,
-// 	// 2. именно на элементе списка
-// 	const isMoveable = activeElement !== currentElement &&
-// 	  currentElement.classList.contains(`list`);
-// 	// Если нет, прерываем выполнение функции
-// 	if (!isMoveable) {
-// 	  return;
-// 	}
-// 	// Находим элемент, перед которым будем вставлять
-// 	const nextElement = boardList[1].lastChild.nextSibling;
-// 	// Вставляем activeElement перед nextElement
-// 	boardList[1].appendChild(activeElement);
-//   });
-
-// boardList[1].addEventListener(`dragover`, (evt) => {
-// 	//Разрешаем сбрасывать элементы в эту область
-// 	evt.preventDefault();
-// 	// Находим перемещаемый элемент
-// 	const activeElement = boardList[0].querySelector(`.selected`);
-// 	// Находим элемент, над которым в данный момент находится курсор
-// 	const currentElement = evt.target;
-// 	// Проверяем, что событие сработало:
-// 	// 1. не на том элементе, который мы перемещаем,
-// 	// 2. именно на элементе списка
-// 	const isMoveable = activeElement !== currentElement &&
-// 	  currentElement.classList.contains(`list-item`);
-// 	// Если нет, прерываем выполнение функции
-// 	if (!isMoveable) {
-// 	  return;
-// 	}
-// 	// Находим элемент, перед которым будем вставлять
-// 	const nextElement = (currentElement === activeElement.nextElementSibling) ?
-// 		currentElement.nextElementSibling :
-// 		currentElement;
-// 	// Вставляем activeElement перед nextElement
-// 	boardList[1].insertBefore(activeElement, nextElement);
-//   });
-
-
-
-
-
-// const empty = document.querySelectorAll(".empty");
-// const drag = document.querySelector(".drag");
-
-// drag.addEventListener("dragstart", dragStart);
-// drag.addEventListener("dragend", dragEnd);
-
-// // requestAnimationFrame - подменяет стиль на прозрачный. работает с частотой 60fps
-// function dragStart(event) {
-//   console.log("start");
-//   this.style.backgroundColor = "green";
-//   requestAnimationFrame(() => (this.style.backgroundColor = "transparent"), 0);
-// }
-
-// function dragEnd() {
-//   console.log("end");
-//   this.style.backgroundColor = "red";
-// }
-
-// for (const item of empty) {
-//   item.addEventListener("dragover", dragOver);
-//   item.addEventListener("dragenter", dragEnter);
-//   item.addEventListener("dragleave", dragLeave);
-//   item.addEventListener("drop", dragDrop);
-// }
-
-// // dragOver срабатывает всё время
-// // preventDefault - обязательно! Сбрасывает стандартные обработчики браузера
-// function dragOver() {
-//   event.preventDefault();
-// }
-
-// // dragEnter срабатывает над объектом один раз
-// function dragEnter() {
-//   this.style.backgroundColor = "gray";
-// }
-
-// // dragLeave срабатывает после ухода
-// function dragLeave() {
-//   this.style.backgroundColor = "black";
-// }
-
-// // drop срабатывает после того, как перетаскиваемый объект опустится на блок
-// function dragDrop() {
-//   console.log("drop");
-//   this.append(drag);
-// }
