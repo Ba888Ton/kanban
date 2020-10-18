@@ -85,7 +85,7 @@ html, body, div, h3, ul, li, input {
 		border-bottom: #3ba7e6 2px solid;
 	}
 	to {
-		border-bottom: transparent 2px solid;
+		border-bottom: #ffffff 2px solid;
 	}
   }
 .dropdown-menu {
