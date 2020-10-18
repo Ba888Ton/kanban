@@ -63,6 +63,9 @@ html, body, div, h3, ul, li, input {
 .list-item.selected {
 	opacity: 0.6;
 }
+.list {
+	padding: 20px 0;
+}
 .input {
 	border: none;
 	width: 100%;
@@ -169,6 +172,7 @@ html, body, div, h3, ul, li, input {
 	padding: 12px 12px 12px 30px;
 	border-radius: 5px;
 	display: none;
+	z-index: 2;
 }
 .board-dropdown.show {
 	display: block;
