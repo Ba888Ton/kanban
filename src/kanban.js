@@ -209,6 +209,31 @@ boardList[1].addEventListener(`dragend`, (evt) => {
 evt.target.classList.remove(`selected`);
 });
 
+for (var i = 0; i < boardList.length; i++) {
+    addEventsTosection(boardList[i]);
+}
+
+function addEventsTosection(section) {
+    section.addEventListener('dragover', function (event) {
+        event.preventDefault();
+    });
+    section.addEventListener('drop', function (event) {
+        if (event.target.className == 'list') {
+            event.target.appendChild(document.getElementById(event.dataTransfer.getData('text')));
+            var liSpanId = ((parseInt(event.dataTransfer.getData('text'))) * -1) + '';
+            // to change the parent of the element in data
+            var elementObj = {
+                id: parseInt(event.dataTransfer.getData('text')),
+                value: document.getElementById(liSpanId).innerText,
+                parent: event.target.id
+            }
+            storage.push(elementObj);
+            // to store data in local storage
+            setItemOnLocalStorage('tasks', JSON.stringify(storage));
+        }
+    });
+}
+
 // mainField.addEventListener(`dragover`, (evt) => {
 // 	// Разрешаем сбрасывать элементы в эту область
 // 	evt.preventDefault();
@@ -231,29 +256,29 @@ evt.target.classList.remove(`selected`);
 // 	boardList[1].appendChild(activeElement);
 //   });
 
-boardList[1].addEventListener(`dragover`, (evt) => {
-	//Разрешаем сбрасывать элементы в эту область
-	evt.preventDefault();
-	// Находим перемещаемый элемент
-	const activeElement = boardList[0].querySelector(`.selected`);
-	// Находим элемент, над которым в данный момент находится курсор
-	const currentElement = evt.target;
-	// Проверяем, что событие сработало:
-	// 1. не на том элементе, который мы перемещаем,
-	// 2. именно на элементе списка
-	const isMoveable = activeElement !== currentElement &&
-	  currentElement.classList.contains(`list-item`);
-	// Если нет, прерываем выполнение функции
-	if (!isMoveable) {
-	  return;
-	}
-	// Находим элемент, перед которым будем вставлять
-	const nextElement = (currentElement === activeElement.nextElementSibling) ?
-		currentElement.nextElementSibling :
-		currentElement;
-	// Вставляем activeElement перед nextElement
-	boardList[1].insertBefore(activeElement, nextElement);
-  });
+// boardList[1].addEventListener(`dragover`, (evt) => {
+// 	//Разрешаем сбрасывать элементы в эту область
+// 	evt.preventDefault();
+// 	// Находим перемещаемый элемент
+// 	const activeElement = boardList[0].querySelector(`.selected`);
+// 	// Находим элемент, над которым в данный момент находится курсор
+// 	const currentElement = evt.target;
+// 	// Проверяем, что событие сработало:
+// 	// 1. не на том элементе, который мы перемещаем,
+// 	// 2. именно на элементе списка
+// 	const isMoveable = activeElement !== currentElement &&
+// 	  currentElement.classList.contains(`list-item`);
+// 	// Если нет, прерываем выполнение функции
+// 	if (!isMoveable) {
+// 	  return;
+// 	}
+// 	// Находим элемент, перед которым будем вставлять
+// 	const nextElement = (currentElement === activeElement.nextElementSibling) ?
+// 		currentElement.nextElementSibling :
+// 		currentElement;
+// 	// Вставляем activeElement перед nextElement
+// 	boardList[1].insertBefore(activeElement, nextElement);
+//   });
 
 
 
