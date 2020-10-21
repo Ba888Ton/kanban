@@ -231,12 +231,14 @@ function addEventsTosection(section) {
     section.addEventListener('dragstart', function (event) {
 		event.dataTransfer.setData('text', event.target.id);
 		event.target.classList.add(`selected`);
-
-		// for (var i = 0; i < dataMock.length; i++) {
-        //     if (dataMock[i].id == event.target.id) {
-        //         dataMock.splice(i, 1);
-        //     }
-        // }
+		for (let i = 0; i < dataMock.length; i++) {
+				for (let j = 0; j < dataMock[i].issues.length; j++) {
+					if (dataMock[i].issues[j].id == event.target.id) {
+						dataMock[i].issues.splice(i, 1);
+						console.log(dataMock[i])
+					}
+				}
+		}
 
 	})
 	section.addEventListener(`dragend`, (event) => {
@@ -255,12 +257,12 @@ function addEventsTosection(section) {
 				minutes: new Date().getMinutes(),
 			}
 
-            dataMock[event.target.parentElement.id].issues.push(elementObj);
+      dataMock[event.target.parentElement.id].issues.push(elementObj);
 			// // to store data in local storage
 			localStorage.setItem('kanbanDataMock', JSON.stringify(dataMock));
 			console.log(localStorage.getItem('kanbanDataMock'))
 		}
-		// mainField.innerHTML = ''
-		// setLocalStorage();
+		mainField.innerHTML = ''
+		setLocalStorage();
     });
 }

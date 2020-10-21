@@ -151,7 +151,11 @@ html, body, div, h3, ul, li, input {
 }
 .title {
 	font-weight: 500;
-	font-size: 18px;	
+	font-size: 18px;
+	cursor: pointer;	
+}
+.title:hover {
+	font-style: italic;
 }
 .board-menu {
 	padding-bottom: 7px;
