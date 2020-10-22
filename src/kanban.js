@@ -8,7 +8,6 @@ let inputItem = document.createElement('input');
 let placeholder = document.querySelector('.main_placeholder');
 inputItem.classList.add('input');
 let boardNum = null;
-let counter = localStorage.getItem('counter') || 0;
 let boardDropdown = document.querySelectorAll('.board-dropdown');
 let boardMenu = document.querySelectorAll('.board-menu');
 let dataMock = JSON.parse(localStorage.getItem('kanbanDataMock')) || 
@@ -37,18 +36,6 @@ newBoard(dataMock, mainField, setLocalStorage);
 deleteBoard(mainField, boardDropdown, boardMenu, dataMock, setLocalStorage);
 
 function inputChangeListener(){
-	let newItem = document.createElement('li');
-	newItem.classList.add('list-item');
-	newItem.innerHTML = inputItem.value;
-	// newItem.addEventListener('dragstart', function (event) {
-    //     event.dataTransfer.setData('text', event.target.id);
-    //     for (var i = 0; i < storage.length; i++) {
-    //         if (storage[i].id == event.target.id) {
-    //             storage.splice(i, 1);
-    //         }
-    //     }
-    // })
-	boardList[0].appendChild(newItem);
 	dataMock[0].issues.push({
 		id: 'task_' + Math.round(Math.random()*1000*61/4),  
 		name : inputItem.value, 
@@ -57,11 +44,10 @@ function inputChangeListener(){
 		minutes: new Date().getMinutes(),
 	 });
 	boardList[0].removeChild(inputItem);
-	counter++;
-	inputItem.value = '';
-	localStorage.setItem('kanbanDataMock',JSON.stringify(dataMock)); 
-	localStorage.setItem('counter', counter); 
-	scroll();
+  inputItem.value = '';
+  localStorage.setItem('kanbanDataMock',JSON.stringify(dataMock));
+  mainField.innerHTML = '';
+	setLocalStorage();
 }
 function clickListener(event){
 	let myEvent = event.target;
@@ -171,7 +157,7 @@ function setLocalStorage(){
 			<li>Replace</li>
 			<li class="delete-board" data-delId="${i}">Delete</li>
 		</ul>
-		<ul class="list" id="list_${i}">${issuesArray}</ul>
+		<ul class="list" id="00${i}">${issuesArray}</ul>
 		<button class="add-btn" data-add="${dataMock[i].title}">Add card</button>`;
 	mainField.appendChild(board);
 	}
@@ -182,6 +168,9 @@ function setLocalStorage(){
 	boardList = document.querySelectorAll('.list');
 	scroll();
 	buttonDisableSwitcher();
+	for (var i = 0; i < boardList.length; i++) {
+		addEventsTosection(boardList[i]);
+	}
 }
 function scroll(){
 	let boardList = document.querySelectorAll('.list');
@@ -209,60 +198,49 @@ function buttonDisableSwitcher(){
 }
 
 // dnd 
-for (var i = 0; i < boardList.length; i++) {
-    addEventsTosection(boardList[i]);
-}
 
 function addEventsTosection(section) {
-    section.addEventListener('dragover', function (event) {
-		event.preventDefault();
-    });
-	// section.addEventListener("dragenter", function( event ) {
-	// 	if (event.target.className === 'list') {
-	// 		document.getElementById(event.target.id).classList.add('expand')
-	// 	}
-	// });
-  
-	// section.addEventListener("dragleave", function( event ) {
-	// 	if (event.target.className !== 'list') {
-	// 		document.getElementById(event.target.id).classList.remove('expand')
-	// 	}
-	// });
-    section.addEventListener('dragstart', function (event) {
-		event.dataTransfer.setData('text', event.target.id);
-		event.target.classList.add(`selected`);
-		for (let i = 0; i < dataMock.length; i++) {
-				for (let j = 0; j < dataMock[i].issues.length; j++) {
-					if (dataMock[i].issues[j].id == event.target.id) {
-						dataMock[i].issues.splice(i, 1);
-						console.log(dataMock[i])
-					}
-				}
-		}
-
-	})
+  section.addEventListener('dragover', function (event) {
+    event.preventDefault();
+    document.getElementById(event.target.id).classList.add('expand')
+  });
+  section.addEventListener('dragstart', function (event) {
+    event.dataTransfer.setData('text', event.target.id);
+    event.target.classList.add(`selected`);
+  });
 	section.addEventListener(`dragend`, (event) => {
 		event.target.classList.remove(`selected`);
-		});
-    section.addEventListener('drop', function (event) {
-        if (event.target.className === 'list') {
-			document.getElementById(event.target.id).classList.remove('expand')
-			let transfer = document.getElementById(event.dataTransfer.getData('text'))
+	});
+  section.addEventListener('drop', function (event) {
+    console.log(event.dataTransfer.getData('text').id)
+    let transfer = document.getElementById(event.dataTransfer.getData('text'))
+    if (+event.target.id === +transfer.parentNode.id  + 1) {
 			event.target.appendChild(transfer);
-            var elementObj = {
+      var elementObj = {
 				id : 'task_' + Math.round(Math.random()*1000*61/4), 
-                name: transfer.innerText,
+        name: transfer.innerText,
 				date: new Date().toDateString(),
 				hours: new Date().getHours(),
 				minutes: new Date().getMinutes(),
-			}
-
+      }
+      console.log(transfer)
+      debugger
+      for (let i = 0; i < dataMock.length; i++) {
+        for (let j = 0; j < dataMock[i].issues.length; j++) {
+          if (dataMock[i].issues[j].id == event.target.id) {
+            dataMock[i].issues = dataMock[i].issues.filter(issue => issue.id !== event.target.id)
+          }
+        }
+      }
       dataMock[event.target.parentElement.id].issues.push(elementObj);
-			// // to store data in local storage
 			localStorage.setItem('kanbanDataMock', JSON.stringify(dataMock));
-			console.log(localStorage.getItem('kanbanDataMock'))
 		}
 		mainField.innerHTML = ''
 		setLocalStorage();
-    });
+  });
+	section.addEventListener("dragleave", function( event ) {
+		if (event.target.className !== 'list') {
+			document.getElementById(event.target.id).classList.remove('expand')
+		}
+	})
 }
