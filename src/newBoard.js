@@ -13,7 +13,7 @@ export default function newBoard(mock, main, cb){
 	function addNewBoard(){	
 		if(input.value){
 			mock.unshift({title: input.value, issues:[]});
-			localStorage.setItem('kanbanDataMock',JSON.stringify(mock));
+			localStorage.setItem('kanbanStorage',JSON.stringify(mock));
 			popup.style.display ='none';
 			input.value = '';
 			main.innerHTML = '';

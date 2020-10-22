@@ -14,7 +14,7 @@ main.addEventListener('click', (e)=>{
 	}
 	if(e.target.dataset.delid){
 		mock.splice(e.target.dataset.delid, 1);
-		localStorage.setItem('kanbanDataMock',JSON.stringify(mock));
+		localStorage.setItem('kanbanStorage',JSON.stringify(mock));
 		main.innerHTML = '';
 		setLocal();
 		dropdown = document.querySelectorAll('.board-dropdown');

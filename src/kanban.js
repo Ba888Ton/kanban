@@ -10,7 +10,7 @@ inputItem.classList.add('input');
 let boardNum = null;
 let boardDropdown = document.querySelectorAll('.board-dropdown');
 let boardMenu = document.querySelectorAll('.board-menu');
-let dataMock = JSON.parse(localStorage.getItem('kanbanDataMock')) || 
+let storage = JSON.parse(localStorage.getItem('kanbanStorage')) || 
 		[{
 			title: 'Backlog',
 			issues: [],
@@ -32,11 +32,11 @@ setLocalStorage();
 mainField.addEventListener('click', clickListener );
 inputItem.addEventListener("change", inputChangeListener );
 
-newBoard(dataMock, mainField, setLocalStorage);
-deleteBoard(mainField, boardDropdown, boardMenu, dataMock, setLocalStorage);
+newBoard(storage, mainField, setLocalStorage);
+deleteBoard(mainField, boardDropdown, boardMenu, storage, setLocalStorage);
 
 function inputChangeListener(){
-	dataMock[0].issues.push({
+	storage[0].issues.push({
 		id: 'task_' + Math.round(Math.random()*1000*61/4),  
 		name : inputItem.value, 
 		date: new Date().toDateString(),
@@ -45,7 +45,7 @@ function inputChangeListener(){
 	 });
 	boardList[0].removeChild(inputItem);
   inputItem.value = '';
-  localStorage.setItem('kanbanDataMock',JSON.stringify(dataMock));
+  localStorage.setItem('kanbanStorage',JSON.stringify(storage));
   mainField.innerHTML = '';
 	setLocalStorage();
 }
@@ -57,8 +57,8 @@ function clickListener(event){
 	if (myEvent.dataset.add){
 		if (document.querySelector('.dropdown-menu')) return;
 		if (document.querySelector('.input')) return;
-		for (let i = 0; i < dataMock.length ; i++){
-			if (dataMock[i].title === myEvent.dataset.add){
+		for (let i = 0; i < storage.length ; i++){
+			if (storage[i].title === myEvent.dataset.add){
 				boardNum = i;				
 			}
 		}
@@ -66,25 +66,25 @@ function clickListener(event){
 			boardList[0].appendChild(inputItem);
 			buttonDisableSwitcher();
 		} else {
-			for (let i = 0; i < dataMock[boardNum - 1].issues.length; i++) {
+			for (let i = 0; i < storage[boardNum - 1].issues.length; i++) {
 				let dropDownItem = document.createElement('li');
 				dropDownItem.setAttribute('data-count', i);
 				dropDownItem.classList.add('dropdown-item');
-				dropDownMenu.appendChild(dropDownItem).innerText = dataMock[boardNum - 1].issues[i].name;
+				dropDownMenu.appendChild(dropDownItem).innerText = storage[boardNum - 1].issues[i].name;
 			}
 			boardList[boardNum].appendChild(dropDownMenu);
 		}
 	}
 	if (myEvent.closest('.dropdown-item')){
 		let choosenItemIndex = myEvent.dataset.count;
-		let choosenItem = dataMock[boardNum - 1].issues.splice(choosenItemIndex, 1);
-		dataMock[boardNum].issues.push(choosenItem[0]);
-		localStorage.setItem('kanbanDataMock',JSON.stringify(dataMock));
-		for (let i = 0; i < dataMock.length; i++){
+		let choosenItem = storage[boardNum - 1].issues.splice(choosenItemIndex, 1);
+		storage[boardNum].issues.push(choosenItem[0]);
+		localStorage.setItem('kanbanStorage',JSON.stringify(storage));
+		for (let i = 0; i < storage.length; i++){
 			boardList[i].innerHTML = '';
 			dropDownMenu.innerHTML = '';		
-			for(let issue of dataMock[i].issues){
-				if (dataMock[i].issues.length > 0){		
+			for(let issue of storage[i].issues){
+				if (storage[i].issues.length > 0){		
 					let listItem = document.createElement('li');
 					listItem.classList.add('list-item');
 					listItem.innerHTML = issue.name;
@@ -106,9 +106,8 @@ function clickListener(event){
 		mainField.innerHTML = ``;
 		let boardNum = myEvent.dataset.title; 
 		let issuesArray = '';
-		if(dataMock[boardNum].issues.length > 0){
-			for(let issue of dataMock[boardNum].issues){
-				
+		if(storage[boardNum].issues.length > 0){
+			for(let issue of storage[boardNum].issues){
 				issuesArray += `
 				<li class="list-item details">
 					<span>date: ${issue.date} time: ${issue.hours}:${issue.minutes}</span>
@@ -121,7 +120,7 @@ function clickListener(event){
 		board.classList.add('board','big_board');
 		board.innerHTML = `
 		<div class="title-wrap">
-			<h3 class="title">${dataMock[boardNum].title}</h3>
+			<h3 class="title">${storage[boardNum].title}</h3>
 			<button class="close_board">close</button>
 		</div>
 		<div class="list-wrap">
@@ -136,10 +135,10 @@ function clickListener(event){
 	}
 }
 function setLocalStorage(){	
-	for (let i = 0; i < dataMock.length; i++){
+	for (let i = 0; i < storage.length; i++){
 		let issuesArray = '';
-		if(dataMock[i].issues.length > 0){
-			for(let issue of dataMock[i].issues){
+		if(storage[i].issues.length > 0){
+			for(let issue of storage[i].issues){
 				issuesArray += `<li draggable="true" id="${issue.id}" class="list-item">${issue.name}</li>`;
 			}
 		}
@@ -148,7 +147,7 @@ function setLocalStorage(){
 		board.id = i;
 		board.innerHTML = `
 		<div class="title-wrap">
-			<h3 class="title" data-title="${i}">${dataMock[i].title}</h3>
+			<h3 class="title" data-title="${i}">${storage[i].title}</h3>
 			<div class="board-menu" data-boardID="${i}">
 			</div>
 		</div>
@@ -158,10 +157,10 @@ function setLocalStorage(){
 			<li class="delete-board" data-delId="${i}">Delete</li>
 		</ul>
 		<ul class="list" id="00${i}">${issuesArray}</ul>
-		<button class="add-btn" data-add="${dataMock[i].title}">Add card</button>`;
+		<button class="add-btn" data-add="${storage[i].title}">Add card</button>`;
 	mainField.appendChild(board);
 	}
-	if (dataMock.length > 0){placeholder.style.display = 'none';
+	if (storage.length > 0){placeholder.style.display = 'none';
 	} else {placeholder.style.display = 'block';}
 	boardDropdown = document.querySelectorAll('.board-dropdown');
 	boardMenu = document.querySelectorAll('.board-menu');
@@ -200,20 +199,18 @@ function buttonDisableSwitcher(){
 // dnd 
 
 function addEventsTosection(section) {
-  section.addEventListener('dragover', function (event) {
-    event.preventDefault();
-    document.getElementById(event.target.id).classList.add('expand')
-  });
   section.addEventListener('dragstart', function (event) {
     event.dataTransfer.setData('text', event.target.id);
     event.target.classList.add(`selected`);
+  });
+  section.addEventListener('dragover', function (event) {
+    event.preventDefault();
   });
 	section.addEventListener(`dragend`, (event) => {
 		event.target.classList.remove(`selected`);
 	});
   section.addEventListener('drop', function (event) {
-    console.log(event.dataTransfer.getData('text').id)
-    let transfer = document.getElementById(event.dataTransfer.getData('text'))
+    let transfer = document.getElementById(event.dataTransfer.getData('text'));
     if (+event.target.id === +transfer.parentNode.id  + 1) {
 			event.target.appendChild(transfer);
       var elementObj = {
@@ -223,24 +220,13 @@ function addEventsTosection(section) {
 				hours: new Date().getHours(),
 				minutes: new Date().getMinutes(),
       }
-      console.log(transfer)
-      debugger
-      for (let i = 0; i < dataMock.length; i++) {
-        for (let j = 0; j < dataMock[i].issues.length; j++) {
-          if (dataMock[i].issues[j].id == event.target.id) {
-            dataMock[i].issues = dataMock[i].issues.filter(issue => issue.id !== event.target.id)
-          }
-        }
+      for (let i = 0; i < storage.length; i++) {
+        storage[i].issues = storage[i].issues.filter(issue => issue.id !== transfer.id)
       }
-      dataMock[event.target.parentElement.id].issues.push(elementObj);
-			localStorage.setItem('kanbanDataMock', JSON.stringify(dataMock));
+      storage[event.target.parentElement.id].issues.push(elementObj);
+			localStorage.setItem('kanbanStorage', JSON.stringify(storage));
 		}
 		mainField.innerHTML = ''
 		setLocalStorage();
   });
-	section.addEventListener("dragleave", function( event ) {
-		if (event.target.className !== 'list') {
-			document.getElementById(event.target.id).classList.remove('expand')
-		}
-	})
 }
