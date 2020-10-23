@@ -1,8 +1,7 @@
 'use strict';
-export function headerMenu(){
+export function headerMenu() {
     let avatar = document.querySelector('.avatar');
     let userDropDown = document.createElement('div');
-
     userDropDown.innerHTML = `
         <ul class="personal-menu">
             <li class="header-drop-item">
@@ -15,7 +14,7 @@ export function headerMenu(){
     `;
     userDropDown.classList.add('drop-down');
     avatar.addEventListener('click', () => {
-        if (avatar.lastChild !== userDropDown){
+        if (avatar.lastChild !== userDropDown) {
             avatar.appendChild(userDropDown);
         } else {
             avatar.removeChild(userDropDown);
