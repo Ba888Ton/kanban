@@ -1,7 +1,5 @@
 'use strict';
-import {headerMenu} from './header.js';
-import newBoard from './newBoard.js';
-import deleteBoard from './deleteBoard.js';
+import { headerMenu } from './header.js';
 headerMenu();
 let mainField = document.querySelector('.main');
 let inputItem = document.createElement('input');
@@ -30,10 +28,7 @@ let boardList;
 setLocalStorage();
 
 mainField.addEventListener('click', clickListener );
-inputItem.addEventListener("change", inputChangeListener );
-
-newBoard(storage, mainField, setLocalStorage);
-deleteBoard(mainField, boardDropdown, boardMenu, storage, setLocalStorage);
+inputItem.addEventListener('change', inputChangeListener );
 
 function inputChangeListener(){
 	storage[0].issues.push({
@@ -72,27 +67,15 @@ function clickListener(event){
 				dropDownItem.classList.add('dropdown-item');
 				dropDownMenu.appendChild(dropDownItem).innerText = storage[boardNum - 1].issues[i].name;
 			}
-			boardList[boardNum].appendChild(dropDownMenu);
+			boardList[boardNum].parentNode.insertBefore(dropDownMenu, boardList[boardNum].parentNode.lastChild);
 		}
 	}
 	if (myEvent.closest('.dropdown-item')){
-		let choosenItemIndex = myEvent.dataset.count;
-		let choosenItem = storage[boardNum - 1].issues.splice(choosenItemIndex, 1);
+		let choosenItem = storage[boardNum - 1].issues.splice(myEvent.dataset.count, 1);
 		storage[boardNum].issues.push(choosenItem[0]);
 		localStorage.setItem('kanbanStorage',JSON.stringify(storage));
-		for (let i = 0; i < storage.length; i++){
-			boardList[i].innerHTML = '';
-			dropDownMenu.innerHTML = '';		
-			for(let issue of storage[i].issues){
-				if (storage[i].issues.length > 0){		
-					let listItem = document.createElement('li');
-					listItem.classList.add('list-item');
-					listItem.innerHTML = issue.name;
-					boardList[i].appendChild(listItem);
-				}
-			}
-		}
-		scroll();
+		mainField.innerHTML = ``;
+		setLocalStorage();
 		buttonDisableSwitcher();
 	}
 	if (myEvent.closest('.dropdown-menu')){
@@ -127,7 +110,7 @@ function clickListener(event){
 			<ul class="list" >${issuesArray}</ul>
 		</div>
 		`;
-	mainField.appendChild(board);
+		mainField.appendChild(board);
 	}
 	if (myEvent.className === 'close_board'){
 		mainField.innerHTML = ``;
@@ -158,25 +141,16 @@ function setLocalStorage(){
 		</ul>
 		<ul class="list" id="00${i}">${issuesArray}</ul>
 		<button class="add-btn" data-add="${storage[i].title}">Add card</button>`;
-	mainField.appendChild(board);
+		mainField.appendChild(board);
 	}
 	if (storage.length > 0){placeholder.style.display = 'none';
 	} else {placeholder.style.display = 'block';}
 	boardDropdown = document.querySelectorAll('.board-dropdown');
 	boardMenu = document.querySelectorAll('.board-menu');
 	boardList = document.querySelectorAll('.list');
-	scroll();
 	buttonDisableSwitcher();
-	for (var i = 0; i < boardList.length; i++) {
+	for (let i = 0; i < boardList.length; i++) {
 		addEventsTosection(boardList[i]);
-	}
-}
-function scroll(){
-	let boardList = document.querySelectorAll('.list');
-	for (let list of boardList){
-		if (list.offsetHeight > 440){
-			list.closest('.board').classList.add('scroll');
-		} else {list.closest('.board').classList.remove('scroll');}
 	}
 }
 function buttonDisableSwitcher(){
@@ -195,35 +169,88 @@ function buttonDisableSwitcher(){
 	active.innerHTML=`Active task: ${activeTask}`;
 	finished.innerHTML=`finished task: ${closedTask}`;
 }
+// add new board
+let popup = document.getElementById('popup');
+let input = document.getElementById('popup-input');
+document.getElementById('new-list').addEventListener('click', () => { 
+	popup.style.display ='none' ? 'flex':'none';
+	input.focus();
+	input.select();
+});
 
-// dnd 
 
+document.getElementById('popup-cancel').addEventListener('click', () => popup.style.display ='none');
+document.getElementById('popup-create').addEventListener('click', addNewBoard);
+function addNewBoard(){	
+	if(input.value){
+		storage.unshift({title: input.value, issues:[]});
+		localStorage.setItem('kanbanStorage',JSON.stringify(storage));
+		popup.style.display ='none';
+		input.value = '';
+		mainField.innerHTML = '';
+		setLocalStorage();
+	}
+	return;
+} 
+// delete board
+mainField.addEventListener('click', deleteBoard );
+function deleteBoard(event){
+	let index = 0;
+	if(event.target.dataset.boardid){
+		if (boardDropdown[index].classList.value === 'board-dropdown show' 
+		&& event.target.dataset.boardid !== index){
+				return;
+			}
+		index = event.target.dataset.boardid;
+		boardDropdown[index].classList.toggle('show');
+		boardMenu[index].classList.toggle('show');
+		return;
+	}
+	if(event.target.dataset.delid){
+		storage.splice(event.target.dataset.delid, 1);
+		localStorage.setItem('kanbanStorage',JSON.stringify(storage));
+		mainField.innerHTML = '';
+		boardDropdown = document.querySelectorAll('.board-dropdown');
+		boardMenu = document.querySelectorAll('.board-menu');
+		index-- ;
+		setLocalStorage();
+		return;
+	}	
+	if (boardDropdown[index]){
+		boardDropdown[index].classList.remove('show');
+		boardMenu[index].classList.remove('show');
+	}
+	return;
+}
+// drag'n'drop events 
 function addEventsTosection(section) {
   section.addEventListener('dragstart', function (event) {
     event.dataTransfer.setData('text', event.target.id);
     event.target.classList.add(`selected`);
   });
   section.addEventListener('dragover', function (event) {
-    event.preventDefault();
+		event.preventDefault();
+		document.getElementById(event.target.id).classList.add('expand');
   });
 	section.addEventListener(`dragend`, (event) => {
 		event.target.classList.remove(`selected`);
 	});
   section.addEventListener('drop', function (event) {
-    let transfer = document.getElementById(event.dataTransfer.getData('text'));
+		document.getElementById(event.target.id).classList.remove('expand');
+		let transfer = document.getElementById(event.dataTransfer.getData('text'));
+		let targetItem = [];
+		for (let i = 0; i < storage.length; i++) {
+			for (let j = 0; j < storage[i].issues.length; j++) {
+				if (storage[i].issues[j].id === event.dataTransfer.getData('text')){
+					targetItem = storage[i].issues[j]
+				}
+			}
+		}
     if (+event.target.id === +transfer.parentNode.id  + 1) {
-			event.target.appendChild(transfer);
-      var elementObj = {
-				id : 'task_' + Math.round(Math.random()*1000*61/4), 
-        name: transfer.innerText,
-				date: new Date().toDateString(),
-				hours: new Date().getHours(),
-				minutes: new Date().getMinutes(),
-      }
-      for (let i = 0; i < storage.length; i++) {
-        storage[i].issues = storage[i].issues.filter(issue => issue.id !== transfer.id)
-      }
-      storage[event.target.parentElement.id].issues.push(elementObj);
+      for (let board of storage) {
+        board.issues = board.issues.filter(issue => issue.id !== transfer.id)
+			}
+      storage[event.target.parentElement.id].issues.push(targetItem);
 			localStorage.setItem('kanbanStorage', JSON.stringify(storage));
 		}
 		mainField.innerHTML = ''

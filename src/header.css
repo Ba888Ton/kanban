@@ -11,8 +11,7 @@
 	height: 100%;
 	display: flex;
 	flex: 1;
-	flex-flow: row wrap;
-	align-content: flex-start;
+	flex-flow: column wrap;
 	background: #0079bf;
 }
 .main_placeholder {
@@ -25,7 +24,7 @@
 }
 
 .header {
-	height: 55px;
+	min-height: 55px;
 	background: #0067A3;
 	flex: 1 100%;
 	display: flex;
